@@ -1,6 +1,49 @@
-import React from 'react';
+import React,{ Component} from 'react';
+import axios from 'axios';
+import {Pie} from 'react-chartjs-2';
 
-function HomePage() {
+class HomePage extends Component{
+    state = {
+       data: { 
+                datasets: [
+                    { 
+                        data: [], 
+                        backgroundColor: [
+                            '#ffcd56',
+                            '#ff6384',
+                            '#36a2eb',
+                            '#fd6b19',
+                            '#48C9B0',
+                            '#9B59B6',
+                            '#5D6D7E',
+                            '#0E6655',
+                            '#5DADE2'
+                           ], 
+                    }
+                ],
+               
+           labels: [
+           ]
+        }
+    }
+
+    async componentDidMount() {
+        const res = await axios.get("http://localhost:4000/budget")
+        console.log(res);
+        let tempvar = this.state.data;
+            for (var i = 0; i < res.data.myBudget.length; i++) {
+                tempvar.datasets[0].data[i] = res.data.myBudget[i].budget;
+                tempvar.labels[i] = res.data.myBudget[i].title;
+            }
+            this.setState({
+                data: Object.assign({}, this.state.data, {
+                    data: tempvar
+                })
+            });
+    }
+    
+
+render() {
   return (
     <main className="center" id="main">
 
@@ -62,11 +105,11 @@ function HomePage() {
                     because they know it is all good and accounted for.
                 </p>
             </article>
-    
+
             <article>
                 <h1>Chart</h1>
                 <p>
-                    <canvas id="myChart" width="400" height="400"></canvas>
+                    <Pie data = {this.state.data} height = {400} width = {400}></Pie>
                 </p>
             </article>
 
@@ -74,6 +117,7 @@ function HomePage() {
 
     </main>
   );
+}
 }
 
 export default HomePage;
