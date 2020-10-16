@@ -5,7 +5,7 @@ const port = 4000;
 
 app.use(cors());
 
-const newlocation = require('./public/chart.json');
+const newlocation = require('./chart.json');
 
 app.get('/budget', (req, res) => {
     res.json(newlocation);
